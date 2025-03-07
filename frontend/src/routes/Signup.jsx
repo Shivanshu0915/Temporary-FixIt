@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import {AdminSignup} from "../components/AdminSignup.jsx"
+
 import { UserSignup } from "../components/Authentication/UserSignup.jsx"
 import { AdminSignup } from "../components/Authentication/AdminSignup.jsx";
 import OTPPage from "./OTP.jsx";
@@ -21,31 +21,28 @@ const Signup = () => {
                 {isAdmin ? "Admin Sign Up" : "User Sign Up"}
               </h2>
               <p className="text-gray-600 mb-6">
-                {isAdmin ? "Signup as an administrator to manage the platform."
+                {isAdmin ? "Signup as a super admin to manage the platform for your college."
                   : "Signup as a student to make your account."}
               </p>
 
               {/* Buttons to Toggle Login Mode */}
               <div className="flex space-x-4 mb-6">
-                <button
-                  className={`py-2 px-4 rounded-md font-medium transition ${isAdmin ? "bg-brown5 text-white hover:bg-brown6 cursor-pointer"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer"
-                    }`}
+                <button className={`py-2 px-4 rounded-md font-medium transition 
+                  ${isAdmin ? "bg-brown5 text-white hover:bg-brown6 cursor-pointer" : "bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer"}`}
                   onClick={() => setLoginMode(!isAdmin)}
                 >
                   Admin
                 </button>
                 <button
-                  className={`py-2 px-4 rounded-md font-medium transition ${!isAdmin ? "bg-brown5 text-white hover:bg-brown6 cursor-pointer"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer"
-                    }`}
+                  className={`py-2 px-4 rounded-md font-medium transition 
+                    ${!isAdmin ? "bg-brown5 text-white hover:bg-brown6 cursor-pointer" : "bg-gray-200 text-gray-800 hover:bg-gray-300 cursor-pointer"}`}
                   onClick={() => setLoginMode(!isAdmin)}
                 >
                   User
                 </button>
               </div>
 
-              {/* Admin Login Form */}
+              {/* Signup Form */}
               {isAdmin ? (
                 <AdminSignup moveToOtp={setEmail}></AdminSignup>)
                 : (

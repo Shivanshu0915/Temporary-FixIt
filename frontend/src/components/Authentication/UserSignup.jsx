@@ -69,7 +69,7 @@ export function UserSignup({moveToOtp}){
                 <input type="password" name="password" id="password" placeholder="Enter your password" className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:brown6"
                 onChange={handleChange}/>
             </div>
-            <div className="w-full text-white py-3 shadow-md flex justify-center items-center shadow-brown2 rounded-md transition hover:shadow-md bg-brown6 hover:bg-badamidark cursor-pointer"
+            <div className="w-full text-white py-3 shadow-md flex justify-center items-center shadow-brown2 rounded-md hover:shadow-md bg-brown6 hover:bg-badamidark cursor-pointer active:scale-95 transition"
             onClick={async (e)=>{
                 e.preventDefault();
                 await UserSignUpHandler(userSignupData, navigate, moveToOtp);

@@ -14,7 +14,7 @@ const App= createBrowserRouter(
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/otpPage' element={<OTPPage/>}/>
         <Route path='/studentDashboard' element={<StudentMain/>}/>
-        <Route path='/adminDashboard' element={<StudentMain/>}/>
+        <Route path='/adminDashboard' element={<AdminMain/>}/>
         </>
     )
 )

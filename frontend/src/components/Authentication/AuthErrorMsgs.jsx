@@ -8,6 +8,9 @@ export function ErrorMsg(error){
         else if(errors.password)    alert(errors.password._errors[0]); // Show password error
         else    alert("Signup failed. Please check your inputs.");
     } 
+    else if (error.response && error.response.status === 400) {
+        alert(error.response.data.msg);
+    }
     else{
         console.error("Error signing up:", error);
         alert("Signup failed. Check your credentials.");

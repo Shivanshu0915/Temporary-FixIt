@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react'
 export function Sidebar(props) {
 
   const isAdmin = true;
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isExpand, setIsExpand] = useState(false);
   const [isMess, setIsMess] = useState(false);
