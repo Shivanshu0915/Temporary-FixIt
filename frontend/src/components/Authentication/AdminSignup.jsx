@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { AdminHandler } from "./AdminSignHandle";
-import { useNavigate } from "react-router";
 import axios from "axios";
+import { AdminSignUpHandler } from "./SignUpHandler";
 
 export function AdminSignup({ moveToOtp }) {
-    const navigate = useNavigate();
-    
     const [colleges, setColleges] = useState([]);
     const [selectedCollege, setSelectedCollege] = useState("");
     const [customCollege, setCustomCollege] = useState("");
@@ -97,7 +94,7 @@ export function AdminSignup({ moveToOtp }) {
                 formData.append(key, adminSignupData[key]);
             }
         });
-        await AdminHandler(formData, navigate, moveToOtp);
+        await AdminSignUpHandler(formData, moveToOtp);
     };
 
     return (
@@ -105,7 +102,7 @@ export function AdminSignup({ moveToOtp }) {
             {/* Name */}
             <div className="mb-2">
                 <label className="block text-gray-700 font-medium mb-2">Name</label>
-                <input  type="text"  name="name"  placeholder="Enter your name" className="w-full p-3 border rounded-md" 
+                <input  type="text" name="name" autoFocus placeholder="Enter your name" className="w-full p-3 border rounded-md" 
                 onChange={handleChange} required />
             </div>
 

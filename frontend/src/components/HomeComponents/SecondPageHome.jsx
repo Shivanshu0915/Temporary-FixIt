@@ -43,7 +43,6 @@ export function SecondPage(){
                     </svg>
                 } title={"Collaboration"} desc={"Work together to enhance campus life through constructive dialogue"}></Card>   
             </div>
-            
         </div>
     )
 }

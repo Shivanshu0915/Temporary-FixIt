@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { AdminLoginHandler } from "./LoginHandler";
 
-export function AdminLogin() {
+export function AdminLogin(){
     const isAdmin = true;
     const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");

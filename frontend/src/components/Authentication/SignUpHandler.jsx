@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ErrorMsg } from "./AuthErrorMsgs";
 
-export const UserSignUpHandler = async (props, navigate, moveToOtp) => {
+export const UserSignUpHandler = async (props, moveToOtp) => {
     console.log(props);
     try{
         const response = await axios.post("http://localhost:3000/auth/signup", props , {
@@ -17,8 +17,7 @@ export const UserSignUpHandler = async (props, navigate, moveToOtp) => {
     }
 };
 
-
-export const AdminSignUpHandler = async (props, navigate, moveToOtp) => {
+export const AdminSignUpHandler = async (props, moveToOtp) => {
     try{
         const signupObject = {};
         props.forEach((value, key) => {
@@ -29,7 +28,7 @@ export const AdminSignUpHandler = async (props, navigate, moveToOtp) => {
         alert("Redirecting to OTP page!");
         moveToOtp(props);
     } 
-    catch (error) {
+    catch(error) {
         ErrorMsg(error);
     }
 };
@@ -60,13 +59,13 @@ export const OtpHandler = async ({isAdmin, formData, otp, onFailure, navigate, i
         else{
             if(isAdmin){
                 alert("Otp verified successfully!")
-                const response = await axios.post("http://localhost:3000/user/signup-request", formData);
+                const response = await axios.post("http://localhost:3000/auth/admin-signup-request", formData);
                 alert("Waiting for approval. Check  your email");
                 navigate("/");
             }
             else{
-                alert("User signed up successfully!");
-                navigate("/studentDashboard")
+                alert("User signed up successfully! Login to continue.");
+                navigate("/login")
             }
             return;
         }

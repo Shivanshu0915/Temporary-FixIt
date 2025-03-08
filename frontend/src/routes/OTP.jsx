@@ -22,7 +22,7 @@ const OTPPage = ({isAdmin, formData, onFailure}) => {
             onChange={(e)=>{
               setOtpEntered(e.target.value);
             }}/>
-            <button className="w-full py-3 text-lg font-semibold bg-btn-green  text-white rounded-lg hover:bg-green1 cursor-pointer" type="submit"
+            <button className="w-full py-3 text-lg font-semibold bg-btn-green  text-white rounded-lg hover:bg-green1 cursor-pointer active:scale-95 transition" type="submit"
             onClick={(e)=>{
               e.preventDefault();
               isResend = false;
@@ -34,7 +34,7 @@ const OTPPage = ({isAdmin, formData, onFailure}) => {
           <div className="text-center mt-6">
             <p className="text-brown5">
               Didn’t receive the code?&nbsp;
-              <button type="button" className="text-orange1 hover:underline animate-bounce hover:cursor-pointer"
+              <button type="button" className="text-orange1 hover:underline animate-bounce hover:cursor-pointer active:scale-95 transition"
               onClick={(e)=>{
                 e.preventDefault();
                 isResend = true;
