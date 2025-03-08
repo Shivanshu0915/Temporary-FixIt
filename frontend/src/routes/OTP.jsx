@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { OtpHandler } from "../components/Authentication/SignUpHandler";
 import { useNavigate } from "react-router";
 
-const OTPPage = ({isAdmin, email, onFailure}) => {
+const OTPPage = ({isAdmin, formData, onFailure}) => {
   const navigate = useNavigate();
   const[otp, setOtpEntered] = useState("");
   let isResend = false;
@@ -26,7 +26,7 @@ const OTPPage = ({isAdmin, email, onFailure}) => {
             onClick={(e)=>{
               e.preventDefault();
               isResend = false;
-              OtpHandler({isAdmin, email, otp, onFailure, navigate, isResend});
+              OtpHandler({isAdmin, formData, otp, onFailure, navigate, isResend});
             }}>
               Verify OTP
             </button>
@@ -38,7 +38,7 @@ const OTPPage = ({isAdmin, email, onFailure}) => {
               onClick={(e)=>{
                 e.preventDefault();
                 isResend = true;
-                OtpHandler({isAdmin, email, otp, onFailure, navigate, isResend})
+                OtpHandler({isAdmin, formData, otp, onFailure, navigate, isResend})
               }}>
                 Resend OTP
               </button>

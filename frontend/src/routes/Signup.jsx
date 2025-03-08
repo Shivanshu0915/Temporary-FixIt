@@ -6,12 +6,12 @@ import OTPPage from "./OTP.jsx";
 
 const Signup = () => {
   const [isAdmin, setLoginMode] = useState(true); // 'admin' or 'user'
+  const [data, setData] = useState(null);
   const [email, setEmail] = useState(null);
-
   return (
     <>
-      {email ? (
-        <OTPPage isAdmin={isAdmin} email={email} onFailure={() => setEmail(null)} />
+      {(data || email) ? (
+        isAdmin ? <OTPPage isAdmin={isAdmin} formData={data} onFailure={() => setData(null)} /> : <OTPPage isAdmin={isAdmin} formData={email} onFailure={() => setEmail(null)} />
       ) : (
         <div className="min-h-[100vh] w-full flex items-center justify-center bg-badamidark p-8">
           <div className="bg-white rounded-lg shadow-md shadow-white p-8 min-w-[40%] w-auto flex flex-col lg:flex-row">
@@ -44,7 +44,7 @@ const Signup = () => {
 
               {/* Signup Form */}
               {isAdmin ? (
-                <AdminSignup moveToOtp={setEmail}></AdminSignup>)
+                <AdminSignup moveToOtp={setData}></AdminSignup>)
                 : (
                   <UserSignup moveToOtp={setEmail}></UserSignup>
                 )}

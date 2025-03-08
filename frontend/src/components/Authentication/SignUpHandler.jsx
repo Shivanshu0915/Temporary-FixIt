@@ -9,11 +9,7 @@ export const UserSignUpHandler = async (props, navigate, moveToOtp) => {
                 "Content-Type": "application/json",
             },
         });
-        console.log("Response", response.data);
         alert("Redirecting to OTP page!");
-
-        //navigating to OTP Page
-        // navigate("/otpPage", {replace : true});
         moveToOtp(props.email);
     } 
     catch (error) {
@@ -23,49 +19,55 @@ export const UserSignUpHandler = async (props, navigate, moveToOtp) => {
 
 
 export const AdminSignUpHandler = async (props, navigate, moveToOtp) => {
-    // console.log(props);
     try{
-        const response = await axios.post("http://localhost:3000/auth/signup", props , {
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const signupObject = {};
+        props.forEach((value, key) => {
+            if(!(key === "document")) signupObject[key] = value;
         });
 
-        console.log("Response", response.data);
+        const response = await axios.post("http://localhost:3000/auth/signup",signupObject);
         alert("Redirecting to OTP page!");
-        //navigating to OTP Page
-        moveToOtp(props.email);
+        moveToOtp(props);
     } 
     catch (error) {
         ErrorMsg(error);
     }
 };
 
-
-
-export const OtpHandler = async ({isAdmin, email, otp, onFailure, navigate, isResend}) => {
-    let props = {
-        email : email,
-        otp : otp
+export const OtpHandler = async ({isAdmin, formData, otp, onFailure, navigate, isResend}) => {
+    let props;
+    if(isAdmin){
+        const formObject = Object.fromEntries(formData.entries());
+        props = {
+            email : formObject.email,
+            otp : otp
+        }
     }
-    console.log(props);
+    else{
+        props = {
+            email : formData,
+            otp : otp
+        }
+    }
+
     const path = isResend ? "http://localhost:3000/auth/resend-otp" : "http://localhost:3000/auth/verify-otp";
     try{
-        const response = await axios.post(path, props , {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const response = await axios.post(path, props);
         if(isResend === true){
             alert("OTP resent successfully!") 
             return;
         }
         else{
-            console.log("Response", response.data);
-            alert("User signed up successfully!")
-
-            // redirecting to admin/student page
-            isAdmin ? navigate("/adminDashboard") : navigate("/studentDashboard");
+            if(isAdmin){
+                alert("Otp verified successfully!")
+                const response = await axios.post("http://localhost:3000/user/signup-request", formData);
+                alert("Waiting for approval. Check  your email");
+                navigate("/");
+            }
+            else{
+                alert("User signed up successfully!");
+                navigate("/studentDashboard")
+            }
             return;
         }
     } 

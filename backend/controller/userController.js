@@ -1,7 +1,7 @@
 const multer = require("multer");
 // const path = require("path");
 // const fs = require("fs");
-const { AdminSignDataM, CollegeName } = require("../models/AuthModel");
+const { AdminSignDataM, CollegeName, HostelName } = require("../models/AuthModel");
 
 // Multer configuration for file uploads
 const upload = multer({ dest: "uploads/" }).single("document");
@@ -83,6 +83,11 @@ const acceptSignup = async (req, res) => {
     const existingCollege = await CollegeName.findOne({ name: admin.college });
     if (!existingCollege) {
         const newCollege = new CollegeName({ name: admin.college });
+        await newCollege.save();
+    }
+    const existingHostel = await HostelName.findOne({ name: admin.hostel });
+    if (!existingHostel) {
+        const newCollege = new HostelName({ name: admin.hostel });
         await newCollege.save();
     }
 

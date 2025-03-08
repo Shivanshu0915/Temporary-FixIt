@@ -1,4 +1,4 @@
-const { StudentData, AdminData, CollegeName, HostelName } = require("../models/AuthModel");
+const { StudentData, AdminData, CollegeName, HostelName, AdminSignDataM } = require("../models/AuthModel");
 const { UserSignupValidate, AdminSignupValidate } = require("../utils/AuthZods");
 const { sendOtpEmail } = require("../utils/sendOtp");
 
@@ -11,8 +11,9 @@ const otpStore = new Map();
 
 const requestOtp = async (req, res) => {
     const signupData = req.body;
+    console.log(signupData);
     const {email} = signupData;
-    let user = signupData.isAdmin ? await AdminData.findOne({email}) : await StudentData.findOne({email});
+    let user = signupData.isAdmin ? await AdminSignDataM.findOne({email}) : await StudentData.findOne({email});
     if(user){
         return res.status(400).json({ 
             msg: "User already exists" ,
@@ -20,7 +21,7 @@ const requestOtp = async (req, res) => {
     }
 
     let parseData = (signupData.isAdmin ? AdminSignupValidate : UserSignupValidate).safeParse(signupData);
-
+    
     if (!parseData.success) {
         return res.status(411).json({
             msg: "Validation failed!",

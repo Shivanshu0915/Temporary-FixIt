@@ -1,11 +1,12 @@
 const zod = require("zod")
 
 const AdminSignupValidate = zod.object({
-    isAdmin : zod.boolean(),
+    isAdmin : zod.coerce.boolean(),
     name : zod.string().min(1),
-    category : zod.string(),
-    position : zod.string(),
-    phoneCode: zod.string().min(1),
+    college : zod.string().min(1),
+    hostel : zod.string().min(1),
+    category : zod.string().min(1),
+    position : zod.string().min(1),
     phone: zod.string()
         .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"), // Ensures phone number is exactly 10 digits
     email: zod.string().email("Invalid email format"),
