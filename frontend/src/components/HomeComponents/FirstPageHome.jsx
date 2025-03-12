@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 
 export function MidContent(){
     return(
-        <div>
+        <div className='min-h-[100vh] bg-badami1'>
             <div id="home" className="w-full min-h-[30vh] flex flex-col items-center justify-end bg-badami1 px-2 py-2">
                 <div className="font sans text-4xl md:text-5xl text-btn-badami font-semibold p-2 animate-slideup">
                     Spot It, Report It, Fix It!
                 </div>
             </div>
 
-            <div className='min-h-[50vh] bg-badami1 relative rounded-t-xl'>
-                <div className="hidden lg:min-h-[65vh] lg:grid grid-cols-12 rounded-t-xl bg-pink-400">
+            <div className='min-h-[70vh] bg-badami1 relative rounded-t-xl'>
+                <div className="hidden lg:min-h-[70vh] lg:grid grid-cols-12 rounded-t-xl bg-pink-400">
                     {/* Containers */}
                     <div className="bg-badami1 col-span-1 z-[3] relative ">
                         <div className="bg-badami6 w-full h-80 my-2 rounded-r-xl absolute bottom-32">

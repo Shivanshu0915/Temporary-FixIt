@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const routes = require("./routes");
 const connectDB = require("./config/db");
@@ -12,9 +13,16 @@ dotenv.config();
 connectDB()
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // Allow requests only from this origin
+    credentials: true // Allow cookies, authorization headers, etc.
+}));
+
 app.use(express.json());
 const PORT = process.env.PORT;
+
+// For handling/accesing refreshToken from cookies.
+app.use(cookieParser()); 
 
 app.use(routes);
 

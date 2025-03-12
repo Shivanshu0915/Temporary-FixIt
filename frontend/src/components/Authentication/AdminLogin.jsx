@@ -1,12 +1,18 @@
 import { useState } from "react"
-import { AdminLoginHandler } from "./LoginHandler";
+import { LoginHandler } from "./LoginHandler";
 
 export function AdminLogin(){
     const isAdmin = true;
     const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");
+
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
+        LoginHandler({isAdmin, email, password});
+    }
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
                     Email
@@ -25,11 +31,7 @@ export function AdminLogin(){
                     setPassword(e.target.value);
                 }}/>
             </div>
-            <button type="submit" className="w-full text-white py-3 bg-brown6 shadow-lg shadow-brown2 rounded-md transition hover:shadow-md cursor-pointer"
-            onClick={(e)=>{
-                e.preventDefault();
-                AdminLoginHandler({isAdmin, email, password});
-            }}>
+            <button type="submit" className="w-full text-white py-3 bg-brown6 shadow-lg shadow-brown2 rounded-md transition hover:shadow-md cursor-pointer active:scale-95">
                 Login as Admin
             </button>
         </form>

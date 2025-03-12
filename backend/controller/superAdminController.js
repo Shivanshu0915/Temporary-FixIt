@@ -1,4 +1,5 @@
 const {CollegeName, HostelName, AdminData } = require("../models/AuthModel");
+const bcrypt = require('bcrypt');
 // Multer configuration for file uploads
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" }).single("document");
@@ -24,6 +25,7 @@ const adminSignupRequest = async (req, res) => {
                 })
             }
             const newAdmin = new AdminData({ isAdmin, name, college, hostel, category, position, phone, email, password });
+            newAdmin.password = await bcrypt.hash(password, 10);
             await newAdmin.save();
 
             // Read file contents (if file is uploaded)

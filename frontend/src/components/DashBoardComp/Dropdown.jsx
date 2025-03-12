@@ -35,7 +35,6 @@ export function Dropdown3({bgc, text, text2, hbgc}) {
                   {text2}
                 </a>
               </li>
-              
             </ul>
           </div>
         )}

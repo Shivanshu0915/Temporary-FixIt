@@ -1,11 +1,97 @@
 const { StudentData, AdminData} = require("../models/AuthModel");
 const { UserSignupValidate, AdminSignupValidate } = require("../utils/AuthZods");
 const { sendOtpEmail } = require("../utils/sendOtp");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
-const login = () => {
+const login = async (req, res) => {
+    const { email, password, isAdmin } = req.body;
+    const role = isAdmin ? "admin" : "user";
 
-}
+    try {
+        const user = isAdmin ? await AdminData.findOne({ email }) : await StudentData.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
 
+        // 🔥 Check if JWT secrets are defined
+        if (!process.env.ACCESS_JWT_TOKEN_SECRET || !process.env.REFRESH_JWT_TOKEN_SECRET) {
+            console.error("JWT secrets are missing!");
+            return res.status(500).json({ message: "Server error: Missing JWT secrets" });
+        }
+        // Generate JWT tokens
+        const accessToken = jwt.sign(
+            { email, role },
+            process.env.ACCESS_JWT_TOKEN_SECRET,
+            { expiresIn: "1m" }
+        );
+        const refreshToken = jwt.sign(
+            { email, role },
+            process.env.REFRESH_JWT_TOKEN_SECRET,
+            { expiresIn: "2m" }
+        );
+
+        // Set refresh token in HTTP-only cookie
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV === "production",
+            secure: false,
+            // sameSite: "None",
+            sameSite: "Lax",
+        });
+
+        res.json({ accessToken, role });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+// Refresh Token Handler
+const refreshToken = (req, res) => {
+    console.log("Checking refresh token...");
+    const token = req.cookies.refreshToken;
+    if (!token)    return res.status(401).json({ message: "No refresh token" });
+
+    jwt.verify(token, process.env.REFRESH_JWT_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            console.log("Invalid or expired refresh token");
+            
+            // CLEAR COOKIE WHEN TOKEN IS INVALID/EXPIRED
+             // in production apps
+            // res.clearCookie("refreshToken", {
+            //     httpOnly: true,
+            //     secure: process.env.NODE_ENV === "production",
+            //     sameSite: "None",
+            // });
+
+            // in local testing
+            res.clearCookie("refreshToken");
+            return res.status(403).json({ message: "Invalid refresh token" });
+        }
+
+        const { email, role } = decoded;
+        const accessToken = jwt.sign({ email, role }, process.env.ACCESS_JWT_TOKEN_SECRET, { expiresIn: "1m" });
+
+        console.log("Token refreshed successfully");
+
+        res.json({ accessToken });
+    });
+};
+
+
+// Logout - Clear refresh token
+const logout = (req, res) => {
+    res.clearCookie("refreshToken");
+    res.json({ message: "Logged out" });
+};
 
 // OTP functions
 const otpStore = new Map();
@@ -26,7 +112,12 @@ const requestOtp = async (req, res) => {
             })
         }
     }
-
+    if(isAdmin) user = await AdminData.findOne({email});
+    if(user){
+        return res.status(400).json({ 
+            msg: "Super Admin already exists with this email." ,
+        })
+    }
     let parseData = (signupData.isAdmin ? AdminSignupValidate : UserSignupValidate).safeParse(signupData);
     if (!parseData.success) {
         return res.status(411).json({
@@ -64,8 +155,11 @@ const verifyOtp = async (req, res) => {
         otpStore.delete(email);
         return res.json({ msg: "Otp verified successfully!" });
     } else {
+        
         const { isAdmin, name, college, hostel, regNo, phone, email, password } = userData;
-        await StudentData.create({ isAdmin, name, college, hostel, regNo, phone, email, password });
+        const newUser = new StudentData({ isAdmin, name, college, hostel, regNo, phone, email, password });
+        newUser.password = await bcrypt.hash(password, 10);
+        newUser.save();
         otpStore.delete(email);
         return res.json({ msg: "User registered successfully!" });
     }   
@@ -86,6 +180,8 @@ const resendOtp = async (req, res) => {
 
 module.exports = {
     login,
+    logout,
+    refreshToken,
     requestOtp,
     verifyOtp,
     resendOtp,

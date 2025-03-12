@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { UserLoginHandler } from "./LoginHandler";
+import { LoginHandler } from "./LoginHandler";
 
 export function UserLogin() {
     const isAdmin = false;
-    const[regNo, setRegNo] = useState("");
+    const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");
-
+    
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
+        LoginHandler({isAdmin, email, password})
+    }
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <div className="mb-4">
-                <label htmlFor="regno" className="block text-gray-700 font-medium mb-2">
-                    Registration Number
+                <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+                    Email
                 </label>
-                <input type="text" name="regno" id="regno" placeholder="Enter your registration number" className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:brown6"
+                <input type="text" name="email" id="email" placeholder="Enter your email" className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:brown6"
                 onChange={(e)=>{
-                    setRegNo(e.target.value);
+                    setEmail(e.target.value);
                 }}/>
             </div>
             <div className="mb-4">
@@ -26,11 +30,7 @@ export function UserLogin() {
                     setPassword(e.target.value);
                 }}/>
             </div>
-            <button type="submit" className="w-full text-white py-3 bg-brown6 shadow-lg shadow-brown2 rounded-md transition hover:shadow-md cursor-pointer"
-            onClick={(e)=>{
-                e.preventDefault();
-                UserLoginHandler({isAdmin, regNo, password});
-            }}>
+            <button type="submit" className="w-full text-white py-3 bg-brown6 shadow-lg shadow-brown2 rounded-md transition hover:shadow-md cursor-pointer active:scale-95">
                 Login as User
             </button>
         </form>
