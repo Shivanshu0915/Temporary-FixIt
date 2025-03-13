@@ -3,7 +3,6 @@ import { DataCard, ProfileCard } from './Cards.jsx';
 import { Dropdown3 } from './Dropdown.jsx'
 import { Link } from "react-router";
 
-
 export function StuMidFirst(){
     const dataItems = [{
         id : 1,

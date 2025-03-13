@@ -2,11 +2,11 @@ import { jwtDecode } from "jwt-decode";
 
 export async function getAccessToken() {
     let token = sessionStorage.getItem("accessToken");
-    const role = sessionStorage.getItem("role");
+    const userRole = sessionStorage.getItem("role");
 
     if (!token) {
         console.log("token nhi hai");
-        return await refreshAccessToken(role);
+        return await refreshAccessToken(userRole);
     }
 
     try {
@@ -16,17 +16,17 @@ export async function getAccessToken() {
 
         if (decoded.exp < currentTime) {
             console.log("Token hai but expired");
-            return await refreshAccessToken(role);
+            return await refreshAccessToken(userRole);
         }
 
-        return { token, error: null };
+        return { token, role: decoded.role, error: null };
     } catch (err) {
         console.error("Invalid token format", err);
-        return await refreshAccessToken(role);
+        return await refreshAccessToken(userRole);
     }
 }
 
-async function refreshAccessToken(role) {
+async function refreshAccessToken(userRole) {
     try {
         const res = await fetch("http://localhost:3000/auth/refresh", {
             method: "POST",
@@ -37,18 +37,22 @@ async function refreshAccessToken(role) {
             console.log("token refresh hua");
             const data = await res.json();
             sessionStorage.setItem("accessToken", data.accessToken);
-            return { token: data.accessToken, error: null };
+            sessionStorage.setItem("role", data.role);
+
+            return { token: data.accessToken, role: data.role, error: null };
         } else {
             console.log("refresh nhi hua");
             sessionStorage.removeItem("accessToken");
             sessionStorage.removeItem("role");
-            return { token: null, error: role ? "sessionExpired" : "notLoggedIn" };
+            return { token: null, role: null, error: userRole ? "sessionExpired" : "notLoggedIn" };
         }
     } catch (err) {
         console.log("token refresh mai error aaya")
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("role");
         console.error("Failed to refresh token", err);
-        return { token: null, error: role ? "sessionExpired" : "notLoggedIn" };
+        return { token: null, role: null, error: userRole ? "sessionExpired" : "notLoggedIn" };
     }
 }
+
+

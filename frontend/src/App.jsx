@@ -10,11 +10,13 @@ import { AdminMain } from "./routes/Authorities/AdminMain.jsx";
 import { FileComplaint } from "./routes/Students/FileComplaint.jsx";
 import { StuMidFirst } from "./components/DashBoardComp/StuMidMain.jsx";
 import UserProfileDashboard from "./routes/Students/Profile.jsx";
+import RedirectHandler from "./components/Authentication/ReactHandler.jsx";
 
 const App = createBrowserRouter(
     createRoutesFromElements(
         <>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<><RedirectHandler/> <Home/></>} />
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/otpPage" element={<OTPPage />} />

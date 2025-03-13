@@ -28,12 +28,12 @@ const login = async (req, res) => {
         const accessToken = jwt.sign(
             { email, role },
             process.env.ACCESS_JWT_TOKEN_SECRET,
-            { expiresIn: "1m" }
+            { expiresIn: "15m" }
         );
         const refreshToken = jwt.sign(
             { email, role },
             process.env.REFRESH_JWT_TOKEN_SECRET,
-            { expiresIn: "2m" }
+            { expiresIn: "7d" }
         );
 
         // Set refresh token in HTTP-only cookie
@@ -78,11 +78,11 @@ const refreshToken = (req, res) => {
         }
 
         const { email, role } = decoded;
-        const accessToken = jwt.sign({ email, role }, process.env.ACCESS_JWT_TOKEN_SECRET, { expiresIn: "1m" });
+        const accessToken = jwt.sign({ email, role }, process.env.ACCESS_JWT_TOKEN_SECRET, { expiresIn: "15m" });
 
         console.log("Token refreshed successfully");
 
-        res.json({ accessToken });
+        res.json({ accessToken,role });
     });
 };
 
