@@ -4,6 +4,7 @@ import data from "@emoji-mart/data";
 import { Smile, Image, PlayCircle, XCircle } from "lucide-react";
 import axios from "axios";
 import { getAccessToken } from "../../components/Authentication/RefreshToken";
+import { Navigate } from "react-router-dom"
 
 export const FileComplaint = () => {
     const [title, setTitle] = useState(""); 
@@ -72,6 +73,17 @@ export const FileComplaint = () => {
         setUploading(true);
         console.log(selectedFiles);
 
+        console.log("Token check krre ");
+        let accessToken;
+        const result = await getAccessToken();
+        console.log("result inside !accesstoken ", result);
+        if (!result.token) {
+            alert("Session expired! Login again to continue");
+            return <Navigate to="/login" />
+        } else {
+            accessToken = result.token
+            console.log("Token refresh hua : ", accessToken);
+        }
         // Upload selected files to the backend (which uploads them to Cloudinary)
         let uploadedMedia = [];
         if (selectedFiles.length > 0) {
@@ -99,16 +111,6 @@ export const FileComplaint = () => {
         
         console.log("axios upload done");
         // Retrieve Access Token from sessionStorage
-        let accessToken = sessionStorage.getItem("accessToken");
-        if (!accessToken) {
-            const result = await getAccessToken();
-            if (!result.token) {
-                alert("Session expired! Login again to continue");
-                return;
-            } else {
-                accessToken = result.token
-            }
-        }
     
         // 3️⃣ Prepare complaint data
         const complaintData = {

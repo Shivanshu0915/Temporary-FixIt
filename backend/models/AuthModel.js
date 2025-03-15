@@ -30,10 +30,10 @@ const HostelNameSchema = new mongoose.Schema({
     name : String
 })
 
-const StudentData = mongoose.model('Registered Students', AuthStudentDataSchema);
-const AdminData = mongoose.model('Registered Admins', AuthAdminDataSchema);
-const HostelName = mongoose.model('Hostels', HostelNameSchema);
-const CollegeName = mongoose.model('Colleges', CollegeNameSchema);
+const StudentData = mongoose.model('registered students', AuthStudentDataSchema);
+const AdminData = mongoose.model('registered admins', AuthAdminDataSchema);
+const HostelName = mongoose.model('hostels', HostelNameSchema);
+const CollegeName = mongoose.model('colleges', CollegeNameSchema);
 
 module.exports = {
     StudentData,

@@ -1,5 +1,8 @@
-import {react, useState} from "react"
 import { Link } from "react-router";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { MediaDisplay } from "./MediaDisplay";
+import { getAccessToken } from "../Authentication/RefreshToken";
 
 export function ProfileCard(){
     const[isImage, setIsImage] = useState(false);
@@ -59,107 +62,528 @@ export function ProfileCard(){
 
 
 
-export function DataCard({props}){
-    const[isUpvoted, setIsUpvoted] = useState(false);
-    const[isDownvoted, setIsDownvoted] = useState(false);
-    const[upCount, setUpCount] = useState(props.upvoteCount);
-    const[downCount, setDownCount] = useState(props.downvoteCount);
+// // // export function DataCard({props}){
+// // //     const[isUpvoted, setIsUpvoted] = useState(false);
+// // //     const[isDownvoted, setIsDownvoted] = useState(false);
+// // //     const[upCount, setUpCount] = useState(props.upvoteCount);
+// // //     const[downCount, setDownCount] = useState(props.downvoteCount);
 
-    return(
-        <div className="bg-stubgcard w-full h-auto rounded-lg p-2">
-            <div className="flex items-center justify-between pr-5 pt-1 pb-2 border-b-[1px] border-gray-500 h-auto bg-stubgcard-200 gap-x-4">
-                <div className="text-[#b9babb] bg-stubgcard text px-3 pt-1">
-                    {props.author}
-                </div>
-                {/* {props.isResolved ? (
-                    <div className="bg-stugreen text-white px-3 py-1.5 rounded-3xl">
-                        Resolved
-                    </div>
-                ) : (
-                    <div className="bg-stured text-white px-3 py-1.5 rounded-3xl">
-                        Unresolved
-                    </div>
-                )} */}
-            </div>
+// // //     return(
+// // //         <div className="bg-stubgcard w-full h-auto rounded-lg p-2">
+// // //             <div className="flex items-center justify-between pr-5 pt-1 pb-2 border-b-[1px] border-gray-500 h-auto bg-stubgcard-200 gap-x-4">
+// // //                 <div className="text-[#b9babb] bg-stubgcard text px-3 pt-1">
+// // //                     {props.name}
+// // //                 </div>
+// // //                 {props.isResolved ? (
+// // //                     <div className="bg-stugreen text-white px-3 py-1.5 rounded-3xl">
+// // //                         Resolved
+// // //                     </div>
+// // //                 ) : (
+// // //                     <div className="bg-stured text-white px-3 py-1.5 rounded-3xl">
+// // //                         Unresolved
+// // //                     </div>
+// // //                 )}
+// // //             </div>
 
-            <div className="p-2 border-b-[1px] border-gray-500 bg-stubgcard">
-                <div className="text-[#e7e8e8] font-medium text-2xl px-1 py-2">
-                    {props.title}
-                </div>
-                <div className="text-[#b9babb] px-1 py-2">
-                    {props.text}
-                </div>
-            </div>
+// // //             <div className="p-2 border-b-[1px] border-gray-500 bg-stubgcard">
+// // //                 <div className="text-[#e7e8e8] font-medium text-2xl px-1 py-2">
+// // //                     {props.title}
+// // //                 </div>
+// // //                 <div className="text-[#b9babb] px-1 py-2">
+// // //                     {props.text}
+// // //                 </div>
+// // //             </div>
             
-            <div className="flex p-2 gap-x-3">
-                <div className="flex items-center ">
-                    <div className="text-white text-sm bg-[#283034] pl-2 pr-1 rounded-l-lg py-1">
-                        {upCount}
-                    </div>
-                    <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer " 
-                     onClick={()=>{
-                        if(!isDownvoted && !isUpvoted){
-                            setIsUpvoted(!isUpvoted);
-                            setUpCount(upCount + 1);
-                        }
-                        else if(isUpvoted){
-                            setIsUpvoted(!isUpvoted);
-                            setUpCount(upCount - 1);
-                        }
-                        else if(isDownvoted && !isUpvoted){
-                            setIsDownvoted(!isDownvoted);
-                            setIsUpvoted(!isUpvoted);
-                            setDownCount(downCount - 1);
-                            setUpCount(upCount + 1);
-                        }
-                    }}>
-                        {(isUpvoted && !isDownvoted) ? (
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                            </svg>
-                        ):(
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                            </svg>
-                        )}
+// // //             <div className="flex p-2 gap-x-3">
+// // //                 <div className="flex items-center ">
+// // //                     <div className="text-white text-sm bg-[#283034] pl-2 pr-1 rounded-l-lg py-1">
+// // //                         {upCount}
+// // //                     </div>
+// // //                     <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer " 
+// // //                      onClick={()=>{
+// // //                         if(!isDownvoted && !isUpvoted){
+// // //                             setIsUpvoted(!isUpvoted);
+// // //                             setUpCount(upCount + 1);
+// // //                         }
+// // //                         else if(isUpvoted){
+// // //                             setIsUpvoted(!isUpvoted);
+// // //                             setUpCount(upCount - 1);
+// // //                         }
+// // //                         else if(isDownvoted && !isUpvoted){
+// // //                             setIsDownvoted(!isDownvoted);
+// // //                             setIsUpvoted(!isUpvoted);
+// // //                             setDownCount(downCount - 1);
+// // //                             setUpCount(upCount + 1);
+// // //                         }
+// // //                     }}>
+// // //                         {(isUpvoted && !isDownvoted) ? (
+// // //                             <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
+// // //                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+// // //                             </svg>
+// // //                         ):(
+// // //                             <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
+// // //                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+// // //                             </svg>
+// // //                         )}
                         
-                    </div>
-                </div>
+// // //                     </div>
+// // //                 </div>
 
-                <div className="flex items-center">
-                    <div className="text-white text-sm bg-[#2A3236] pl-2 pr-1 rounded-l-lg py-1">
-                        {downCount}
-                    </div>
-                    <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer" 
-                     onClick={()=>{
-                        if(!isUpvoted && !isDownvoted){
-                            setIsDownvoted(!isDownvoted);
-                            setDownCount(downCount + 1);
-                        }
-                        else if(isDownvoted){
-                            setIsDownvoted(!isDownvoted);
-                            setDownCount(downCount - 1);
-                        }
-                        else if(isUpvoted && !isDownvoted){
-                            setIsDownvoted(!isDownvoted);
-                            setIsUpvoted(!isUpvoted);
-                            setUpCount(upCount - 1);
-                            setDownCount(downCount + 1);
-                        }
-                    }}>
-                        {isDownvoted ? (
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
-                            </svg>
-                        ) : (
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
-                            </svg>
-                        )}
+// // //                 <div className="flex items-center">
+// // //                     <div className="text-white text-sm bg-[#2A3236] pl-2 pr-1 rounded-l-lg py-1">
+// // //                         {downCount}
+// // //                     </div>
+// // //                     <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer" 
+// // //                      onClick={()=>{
+// // //                         if(!isUpvoted && !isDownvoted){
+// // //                             setIsDownvoted(!isDownvoted);
+// // //                             setDownCount(downCount + 1);
+// // //                         }
+// // //                         else if(isDownvoted){
+// // //                             setIsDownvoted(!isDownvoted);
+// // //                             setDownCount(downCount - 1);
+// // //                         }
+// // //                         else if(isUpvoted && !isDownvoted){
+// // //                             setIsDownvoted(!isDownvoted);
+// // //                             setIsUpvoted(!isUpvoted);
+// // //                             setUpCount(upCount - 1);
+// // //                             setDownCount(downCount + 1);
+// // //                         }
+// // //                     }}>
+// // //                         {isDownvoted ? (
+// // //                             <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
+// // //                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
+// // //                             </svg>
+// // //                         ) : (
+// // //                             <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
+// // //                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
+// // //                             </svg>
+// // //                         )}
                         
-                    </div>
-                </div>
+// // //                     </div>
+// // //                 </div>
+// // //             </div>
+// // //         </div>
+// // //     )
+// // // }
+
+// // export function DataCard({ props }) {
+// //     const { _id, title, text, media, upvotes, downvotes, datePosted, studentId } = props;
+// //     const [upvoteCount, setUpvoteCount] = useState(upvotes);
+// //     const [downvoteCount, setDownvoteCount] = useState(downvotes);
+
+// //     const handleVote = async (type) => {
+// //         try {
+// //             const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
+// //                 complaintId: _id,
+// //                 voteType: type,
+// //             });
+
+// //             if (response.data.success) {
+// //                 if (type === "upvote") setUpvoteCount((prev) => prev + 1);
+// //                 if (type === "downvote") setDownvoteCount((prev) => prev + 1);
+// //             }
+// //         } catch (error) {
+// //             console.error("Error voting:", error);
+// //         }
+// //     };
+
+// //     return (
+// //         <div className="bg-stubgcard p-3 rounded-md shadow-md">
+// //             {/* Complaint Details */}
+// //             <div className="mb-2">
+// //                 <h2 className="text-lg font-semibold text-white">{title}</h2>
+// //                 <p className="text-gray-400">{text}</p>
+// //             </div>
+
+// //             {/* Media Section */}
+// //             {media.length > 0 && (
+// //                 <div className="mt-2">
+// //                     {media.map((file, index) => (
+// //                         <div key={index} className="mt-1">
+// //                             {file.endsWith(".mp4") ? (
+// //                                 <video src={file} controls className="w-full rounded-md" />
+// //                             ) : (
+// //                                 <img src={file} alt="Complaint media" className="w-full rounded-md" />
+// //                             )}
+// //                         </div>
+// //                     ))}
+// //                 </div>
+// //             )}
+
+// //             {/* User Info */}
+// //             <div className="mt-3 text-gray-400 text-sm">
+// //                 <p><strong>Student:</strong> {studentId.name} ({studentId.regNo})</p>
+// //                 <p><strong>Complaint ID:</strong> {_id}</p>
+// //                 <p><strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}</p>
+// //             </div>
+
+// //             {/* Voting System */}
+// //             <div className="flex justify-between items-center mt-3">
+// //                 <button 
+// //                     className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700"
+// //                     onClick={() => handleVote("upvote")}
+// //                 >
+// //                     👍 {upvoteCount}
+// //                 </button>
+// //                 <button 
+// //                     className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
+// //                     onClick={() => handleVote("downvote")}
+// //                 >
+// //                     👎 {downvoteCount}
+// //                 </button>
+// //             </div>
+// //         </div>
+// //     );
+// // }
+
+// export function DataCard({ props }) {
+//     const { _id, title, text, media = [], upvotes = 0, downvotes = 0, datePosted, studentId } = props;
+//     console.log("Media in DataCard:", media);
+//     const [upvoteCount, setUpvoteCount] = useState(upvotes);
+//     const [downvoteCount, setDownvoteCount] = useState(downvotes);
+//     const [userVote, setUserVote] = useState(null); // Track user's previous vote
+
+//     const handleVote = async (type) => {
+//         if (userVote === type) return; // Prevent duplicate voting
+
+//         try {
+//             const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
+//                 complaintId: _id,
+//                 voteType: type,
+//             });
+
+//             if (response.data.success) {
+//                 if (type === "upvote") {
+//                     setUpvoteCount((prev) => prev + 1);
+//                     if (userVote === "downvote") setDownvoteCount((prev) => prev - 1); // Undo previous downvote
+//                 } else if (type === "downvote") {
+//                     setDownvoteCount((prev) => prev + 1);
+//                     if (userVote === "upvote") setUpvoteCount((prev) => prev - 1); // Undo previous upvote
+//                 }
+//                 setUserVote(type); // Update user's vote state
+//             }
+//         } catch (error) {
+//             console.error("Error voting:", error);
+//         }
+//     };
+
+//     return (
+//         <div className="bg-stubgcard p-3 rounded-md shadow-md">
+//             {/* Complaint Details */}
+//             <div className="mb-2">
+//                 <h2 className="text-lg font-semibold text-white">{title}</h2>
+//                 <p className="text-gray-400">{text}</p>
+//             </div>
+
+//             {/* Media Section */}
+//             {media.length > 0 && (
+//                 <div className="mt-2">
+//                     {media.map((file, index) => (
+//                         <div key={index} className="mt-1">
+//                             {file.endsWith(".mp4") ? (
+//                                 <video src={file} controls className="w-full rounded-md" />
+//                             ) : (
+//                                 <img src={file} alt="Complaint media" className="w-full rounded-md" />
+//                             )}
+//                         </div>
+//                     ))}
+//                 </div>
+//             )}
+
+//             {/* User Info */}
+//             <div className="mt-3 text-gray-400 text-sm">
+//                 <p><strong>Student:</strong> {studentId.name} ({studentId.regNo})</p>
+//                 <p><strong>Complaint ID:</strong> {_id}</p>
+//                 <p><strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}</p>
+//             </div>
+
+//             {/* Voting System */}
+//             <div className="flex justify-between items-center mt-3">
+//                 <button 
+//                     className={`px-3 py-1 rounded-md ${userVote === "upvote" ? "bg-green-700" : "bg-green-600"} text-white`}
+//                     onClick={() => handleVote("upvote")}
+//                 >
+//                     👍 {upvoteCount}
+//                 </button>
+//                 <button 
+//                     className={`px-3 py-1 rounded-md ${userVote === "downvote" ? "bg-red-700" : "bg-red-600"} text-white`}
+//                     onClick={() => handleVote("downvote")}
+//                 >
+//                     👎 {downvoteCount}
+//                 </button>
+//             </div>
+//         </div>
+//     );
+// }
+
+
+ /// fixed code but not highlighted btns -----------------------------------
+// export function DataCard({ props }) {
+//     const { 
+//         _id, 
+//         title, 
+//         text, 
+//         content: { media = [] } = {}, // Extract media from props.content
+//         upvotes = 0, 
+//         downvotes = 0, 
+//         datePosted, 
+//         student  // Assuming student holds the detailed student data
+//     } = props;
+
+//     console.log("Media in DataCard:", media); // Should now log the actual media array
+
+//     const [upvoteCount, setUpvoteCount] = useState(upvotes);
+//     const [downvoteCount, setDownvoteCount] = useState(downvotes);
+//     const [userVote, setUserVote] = useState(null); // Track user's previous vote
+
+//     const handleVote = async (type) => {
+//         if (userVote === type) return; // Prevent duplicate voting
+//         try {
+//             let accessToken;
+//             const result = await getAccessToken();
+//             if (!result.token) {
+//                 alert("Session expired! Login again to continue");
+//                 window.location.href = "/login";
+//                 return;
+//             }
+//             else accessToken = result.token;
+
+//             // const { data } = await axios.get(`http://localhost:3000/user/get-student-id`, {
+//             //     headers: { Authorization: `Bearer ${accessToken}` },
+//             // });
+
+//             // const studentId = data.studentId;
+//             // if (!studentId) {
+//             //     console.error("Student ID not found.");
+//             //     return;
+//             // }
+
+//             // const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
+//             //     complaintId: _id,
+//             //     studentId: studentId,
+//             //     voteType: type,
+//             // });
+//             const response = await axios.post(`http://localhost:3000/user/vote-complaint`,
+//                 {
+//                     complaintId: _id,
+//                     voteType: type,
+//                 },
+//                 {
+//                     headers: {
+//                         Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+//                     },
+//                 }
+//             );
+//             if (response.data.success) {
+//                 if (type === "upvote") {
+//                     setUpvoteCount((prev) => prev + 1);
+//                     if (userVote === "downvote") setDownvoteCount((prev) => prev - 1);
+//                 } else if (type === "downvote") {
+//                     setDownvoteCount((prev) => prev + 1);
+//                     if (userVote === "upvote") setUpvoteCount((prev) => prev - 1);
+//                 }
+//                 setUserVote(type);
+//             }
+//         } catch (error) {
+//             console.error("Error voting:", error);
+//         }
+//     };
+
+//     return (
+//         <div className="bg-stubgcard p-3 rounded-md shadow-md">
+//             {/* Complaint Details */}
+//             <div className="mb-2">
+//                 <h2 className="text-lg font-semibold text-white">{title}</h2>
+//                 <p className="text-gray-400">{text}</p>
+//             </div>
+
+//             {/* Media Section */}
+//             {/* {media.length > 0 && (
+//                 <div className="mt-2">
+//                     {media.map((file, index) => (
+//                         <div key={index} className="mt-1">
+//                             {file.type === "video" ? (
+//                                 <video src={file.url} controls className="w-full rounded-md" />
+//                             ) : (
+//                                 <img src={file.url} alt="Complaint media" className="w-full rounded-md" />
+//                             )}
+//                         </div>
+//                     ))}
+//                 </div>
+//             )} */}
+
+//             {/* Media Section */}
+//             <div className="mt-2">
+//                 {/* <MediaDisplay media={media} /> */}
+//                 <MediaDisplay media={media} />
+//             </div>
+
+//             {/* User Info */}
+//             <div className="mt-3 text-gray-400 text-sm">
+//                 <p>
+//                     <strong>Student:</strong> {student.name} ({student.regNo})
+//                 </p>
+//                 <p>
+//                     <strong>Complaint ID:</strong> {_id}
+//                 </p>
+//                 <p>
+//                     <strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}
+//                 </p>
+//             </div>
+
+//             {/* Voting System */}
+//             <div className="flex justify-between items-center mt-3">
+//                 <button 
+//                     className={`px-3 py-1 rounded-md ${userVote === "upvote" ? "bg-green-700" : "bg-green-600"} text-white`}
+//                     onClick={() => handleVote("upvote")}
+//                 >
+//                     👍 {upvoteCount}
+//                 </button>
+//                 <button 
+//                     className={`px-3 py-1 rounded-md ${userVote === "downvote" ? "bg-red-700" : "bg-red-600"} text-white`}
+//                     onClick={() => handleVote("downvote")}
+//                 >
+//                     👎 {downvoteCount}
+//                 </button>
+//             </div>
+//         </div>
+//     );
+// }
+
+export function DataCard({ props }) {
+    const { 
+        _id, 
+        title, 
+        text, 
+        content: { media = [] } = {},
+        upvotes = 0, 
+        downvotes = 0, 
+        datePosted, 
+        student  
+    } = props;
+
+    const [upvoteCount, setUpvoteCount] = useState(upvotes);
+    const [downvoteCount, setDownvoteCount] = useState(downvotes);
+    const [userVote, setUserVote] = useState(null); 
+
+    useEffect(() => {
+        const fetchUserVote = async () => {
+            try {
+                let accessToken ;
+                const result = await getAccessToken();
+                if(!result.token){
+                    alert("Session expired! Login again to continue");
+                    window.location.href = "/login";
+                    return;
+                }
+                else    accessToken = result.token;
+
+                const response = await axios.get(`http://localhost:3000/user/get-user-vote/${_id}`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+
+                if (response.data.success) {
+                    setUserVote(response.data.userVote);
+                }
+            } catch (error) {
+                console.error("Error fetching user vote:", error);
+            }
+        };
+
+        fetchUserVote();
+    }, [_id]);
+
+    const handleVote = async (type) => {
+        // let newVoteType;
+        // if (userVote === type) {
+        //     newVoteType = 0; // Neutralize vote if clicked again
+        // } else {
+        //     newVoteType = type === "upvote" ? 1 : -1;
+        // }
+
+        try {
+            let accessToken ;
+            const result = await getAccessToken();
+            if(!result.token){
+                alert("Session expired! Login again to continue");
+                window.location.href = "/login";
+                return;
+            }
+            else    accessToken = result.token;
+
+            // const response = await axios.post(
+            //     `http://localhost:3000/user/vote-complaint`,
+            //     { complaintId: _id, voteType: newVoteType },
+            //     { headers: { Authorization: `Bearer ${accessToken}` } }
+            // );
+
+            const response = await axios.post(
+                `http://localhost:3000/user/vote-complaint`,
+                { complaintId: _id, voteType: userVote === type ? 0 : type }, // Toggle vote
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+
+            // if (response.data.success) {
+            //     if (newVoteType === 1) {
+            //         setUpvoteCount((prev) => prev + 1);
+            //         if (userVote === -1) setDownvoteCount((prev) => prev - 1);
+            //     } else if (newVoteType === -1) {
+            //         setDownvoteCount((prev) => prev + 1);
+            //         if (userVote === 1) setUpvoteCount((prev) => prev - 1);
+            //     } else {
+            //         if (userVote === 1) setUpvoteCount((prev) => prev - 1);
+            //         if (userVote === -1) setDownvoteCount((prev) => prev - 1);
+            //     }
+            //     setUserVote(newVoteType === 0 ? null : newVoteType);
+            // }
+            if (response.data.success) {
+                setUpvoteCount(response.data.upvotes);
+                setDownvoteCount(response.data.downvotes);
+                setUserVote(response.data.userVote);
+            }
+        } catch (error) {
+            console.error("Error voting:", error);
+        }
+    };
+
+    return (
+        <div className="bg-stubgcard p-3 rounded-md shadow-md">
+            <div className="mb-2">
+                <h2 className="text-lg font-semibold text-white">{title}</h2>
+                <p className="text-gray-400">{text}</p>
+            </div>
+
+            <div className="mt-2">
+                <MediaDisplay media={media} />
+            </div>
+
+            <div className="mt-3 text-gray-400 text-sm">
+                <p>
+                    <strong>Student:</strong> {student.name} ({student.regNo})
+                </p>
+                <p>
+                    <strong>Complaint ID:</strong> {_id}
+                </p>
+                <p>
+                    <strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}
+                </p>
+            </div>
+
+            <div className="flex justify-between items-center mt-3">
+                <button 
+                    className={`px-3 py-1 rounded-md ${userVote === 1 ? "bg-green-700" : "bg-green-600"} text-white`}
+                    onClick={() => handleVote(1)}
+                >
+                    👍 {upvoteCount}
+                </button>
+                <button 
+                    className={`px-3 py-1 rounded-md ${userVote === -1 ? "bg-red-700" : "bg-red-600"} text-white`}
+                    onClick={() => handleVote(-1)}
+                >
+                    👎 {downvoteCount}
+                </button>
             </div>
         </div>
-    )
+    );
 }

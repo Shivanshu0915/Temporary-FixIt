@@ -29,6 +29,7 @@ const App = createBrowserRouter(
 
             <Route path="/studentDashboard" element={<ProtectedRoute allowedRole="user"><StudentMain /></ProtectedRoute>}>
                 <Route index element={ <ProtectedRoute allowedRole="user"> <StuMidFirst /></ProtectedRoute>}/>
+                <Route path="hostel" element={ <ProtectedRoute allowedRole="user"> <StuMidFirst /></ProtectedRoute>}/>
                 <Route path="file-complaint" element={<ProtectedRoute allowedRole="user"><FileComplaint /></ProtectedRoute>}/>
             </Route>
 
