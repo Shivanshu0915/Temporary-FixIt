@@ -89,7 +89,11 @@ const refreshToken = (req, res) => {
 
 // Logout - Clear refresh token
 const logout = (req, res) => {
-    res.clearCookie("refreshToken");
+    // res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        sameSite: "Lax",
+    });
     res.json({ message: "Logged out" });
 };
 

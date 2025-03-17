@@ -605,7 +605,7 @@ export function StuMidFirst() {
                 {/* Complaints List Container */}
                 <div
                     ref={containerRef}
-                    className="w-full flex flex-col gap-y-3 max-h-[calc(100vh-120px)] overflow-y-scroll scrollbar-thin scrollbar-webkit bg-stubgdark px-1 pt-1"
+                    className="w-full flex flex-col gap-y-5 max-h-[calc(100vh-120px)] overflow-y-scroll scrollbar-thin scrollbar-webkit bg-stubgdark px-1 pt-1"
                 >
                     {complaints.map((item) => (
                         <DataCard key={item._id} props={item} />

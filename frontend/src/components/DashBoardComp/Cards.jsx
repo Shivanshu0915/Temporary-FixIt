@@ -1,10 +1,26 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MediaDisplay } from "./MediaDisplay";
 import { getAccessToken } from "../Authentication/RefreshToken";
 
 export function ProfileCard(){
+    const navigate = useNavigate();
+
+    const logoutHandler = async () => {
+        try {
+            await axios.post("http://localhost:3000/auth/logout", {}, { withCredentials: true });
+
+            // Remove accessToken from sessionStorage
+            sessionStorage.removeItem("accessToken");
+
+            // Redirect user
+            navigate("/");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
     const[isImage, setIsImage] = useState(false);
     const imgPath = "";
     return(
@@ -47,7 +63,8 @@ export function ProfileCard(){
                         Change Mode
                     </div>
                 </div>
-                <div className="cursor-pointer px-4 py-2 bg-stubgcard hover:bg-stubgdark hover:text-white text-sm font-normal flex items-center rounded-sm">
+                <div className="cursor-pointer px-4 py-2 bg-stubgcard hover:bg-stubgdark hover:text-white text-sm font-normal flex items-center rounded-sm"
+                onClick={logoutHandler}>
                     <div className="pl-1">
                         <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="white"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>
                     </div>
@@ -167,295 +184,13 @@ export function ProfileCard(){
 // // //     )
 // // // }
 
-// // export function DataCard({ props }) {
-// //     const { _id, title, text, media, upvotes, downvotes, datePosted, studentId } = props;
-// //     const [upvoteCount, setUpvoteCount] = useState(upvotes);
-// //     const [downvoteCount, setDownvoteCount] = useState(downvotes);
-
-// //     const handleVote = async (type) => {
-// //         try {
-// //             const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
-// //                 complaintId: _id,
-// //                 voteType: type,
-// //             });
-
-// //             if (response.data.success) {
-// //                 if (type === "upvote") setUpvoteCount((prev) => prev + 1);
-// //                 if (type === "downvote") setDownvoteCount((prev) => prev + 1);
-// //             }
-// //         } catch (error) {
-// //             console.error("Error voting:", error);
-// //         }
-// //     };
-
-// //     return (
-// //         <div className="bg-stubgcard p-3 rounded-md shadow-md">
-// //             {/* Complaint Details */}
-// //             <div className="mb-2">
-// //                 <h2 className="text-lg font-semibold text-white">{title}</h2>
-// //                 <p className="text-gray-400">{text}</p>
-// //             </div>
-
-// //             {/* Media Section */}
-// //             {media.length > 0 && (
-// //                 <div className="mt-2">
-// //                     {media.map((file, index) => (
-// //                         <div key={index} className="mt-1">
-// //                             {file.endsWith(".mp4") ? (
-// //                                 <video src={file} controls className="w-full rounded-md" />
-// //                             ) : (
-// //                                 <img src={file} alt="Complaint media" className="w-full rounded-md" />
-// //                             )}
-// //                         </div>
-// //                     ))}
-// //                 </div>
-// //             )}
-
-// //             {/* User Info */}
-// //             <div className="mt-3 text-gray-400 text-sm">
-// //                 <p><strong>Student:</strong> {studentId.name} ({studentId.regNo})</p>
-// //                 <p><strong>Complaint ID:</strong> {_id}</p>
-// //                 <p><strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}</p>
-// //             </div>
-
-// //             {/* Voting System */}
-// //             <div className="flex justify-between items-center mt-3">
-// //                 <button 
-// //                     className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700"
-// //                     onClick={() => handleVote("upvote")}
-// //                 >
-// //                     👍 {upvoteCount}
-// //                 </button>
-// //                 <button 
-// //                     className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
-// //                     onClick={() => handleVote("downvote")}
-// //                 >
-// //                     👎 {downvoteCount}
-// //                 </button>
-// //             </div>
-// //         </div>
-// //     );
-// // }
-
-// export function DataCard({ props }) {
-//     const { _id, title, text, media = [], upvotes = 0, downvotes = 0, datePosted, studentId } = props;
-//     console.log("Media in DataCard:", media);
-//     const [upvoteCount, setUpvoteCount] = useState(upvotes);
-//     const [downvoteCount, setDownvoteCount] = useState(downvotes);
-//     const [userVote, setUserVote] = useState(null); // Track user's previous vote
-
-//     const handleVote = async (type) => {
-//         if (userVote === type) return; // Prevent duplicate voting
-
-//         try {
-//             const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
-//                 complaintId: _id,
-//                 voteType: type,
-//             });
-
-//             if (response.data.success) {
-//                 if (type === "upvote") {
-//                     setUpvoteCount((prev) => prev + 1);
-//                     if (userVote === "downvote") setDownvoteCount((prev) => prev - 1); // Undo previous downvote
-//                 } else if (type === "downvote") {
-//                     setDownvoteCount((prev) => prev + 1);
-//                     if (userVote === "upvote") setUpvoteCount((prev) => prev - 1); // Undo previous upvote
-//                 }
-//                 setUserVote(type); // Update user's vote state
-//             }
-//         } catch (error) {
-//             console.error("Error voting:", error);
-//         }
-//     };
-
-//     return (
-//         <div className="bg-stubgcard p-3 rounded-md shadow-md">
-//             {/* Complaint Details */}
-//             <div className="mb-2">
-//                 <h2 className="text-lg font-semibold text-white">{title}</h2>
-//                 <p className="text-gray-400">{text}</p>
-//             </div>
-
-//             {/* Media Section */}
-//             {media.length > 0 && (
-//                 <div className="mt-2">
-//                     {media.map((file, index) => (
-//                         <div key={index} className="mt-1">
-//                             {file.endsWith(".mp4") ? (
-//                                 <video src={file} controls className="w-full rounded-md" />
-//                             ) : (
-//                                 <img src={file} alt="Complaint media" className="w-full rounded-md" />
-//                             )}
-//                         </div>
-//                     ))}
-//                 </div>
-//             )}
-
-//             {/* User Info */}
-//             <div className="mt-3 text-gray-400 text-sm">
-//                 <p><strong>Student:</strong> {studentId.name} ({studentId.regNo})</p>
-//                 <p><strong>Complaint ID:</strong> {_id}</p>
-//                 <p><strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}</p>
-//             </div>
-
-//             {/* Voting System */}
-//             <div className="flex justify-between items-center mt-3">
-//                 <button 
-//                     className={`px-3 py-1 rounded-md ${userVote === "upvote" ? "bg-green-700" : "bg-green-600"} text-white`}
-//                     onClick={() => handleVote("upvote")}
-//                 >
-//                     👍 {upvoteCount}
-//                 </button>
-//                 <button 
-//                     className={`px-3 py-1 rounded-md ${userVote === "downvote" ? "bg-red-700" : "bg-red-600"} text-white`}
-//                     onClick={() => handleVote("downvote")}
-//                 >
-//                     👎 {downvoteCount}
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// }
-
-
- /// fixed code but not highlighted btns -----------------------------------
-// export function DataCard({ props }) {
-//     const { 
-//         _id, 
-//         title, 
-//         text, 
-//         content: { media = [] } = {}, // Extract media from props.content
-//         upvotes = 0, 
-//         downvotes = 0, 
-//         datePosted, 
-//         student  // Assuming student holds the detailed student data
-//     } = props;
-
-//     console.log("Media in DataCard:", media); // Should now log the actual media array
-
-//     const [upvoteCount, setUpvoteCount] = useState(upvotes);
-//     const [downvoteCount, setDownvoteCount] = useState(downvotes);
-//     const [userVote, setUserVote] = useState(null); // Track user's previous vote
-
-//     const handleVote = async (type) => {
-//         if (userVote === type) return; // Prevent duplicate voting
-//         try {
-//             let accessToken;
-//             const result = await getAccessToken();
-//             if (!result.token) {
-//                 alert("Session expired! Login again to continue");
-//                 window.location.href = "/login";
-//                 return;
-//             }
-//             else accessToken = result.token;
-
-//             // const { data } = await axios.get(`http://localhost:3000/user/get-student-id`, {
-//             //     headers: { Authorization: `Bearer ${accessToken}` },
-//             // });
-
-//             // const studentId = data.studentId;
-//             // if (!studentId) {
-//             //     console.error("Student ID not found.");
-//             //     return;
-//             // }
-
-//             // const response = await axios.post(`http://localhost:3000/user/vote-complaint`, {
-//             //     complaintId: _id,
-//             //     studentId: studentId,
-//             //     voteType: type,
-//             // });
-//             const response = await axios.post(`http://localhost:3000/user/vote-complaint`,
-//                 {
-//                     complaintId: _id,
-//                     voteType: type,
-//                 },
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-//                     },
-//                 }
-//             );
-//             if (response.data.success) {
-//                 if (type === "upvote") {
-//                     setUpvoteCount((prev) => prev + 1);
-//                     if (userVote === "downvote") setDownvoteCount((prev) => prev - 1);
-//                 } else if (type === "downvote") {
-//                     setDownvoteCount((prev) => prev + 1);
-//                     if (userVote === "upvote") setUpvoteCount((prev) => prev - 1);
-//                 }
-//                 setUserVote(type);
-//             }
-//         } catch (error) {
-//             console.error("Error voting:", error);
-//         }
-//     };
-
-//     return (
-//         <div className="bg-stubgcard p-3 rounded-md shadow-md">
-//             {/* Complaint Details */}
-//             <div className="mb-2">
-//                 <h2 className="text-lg font-semibold text-white">{title}</h2>
-//                 <p className="text-gray-400">{text}</p>
-//             </div>
-
-//             {/* Media Section */}
-//             {/* {media.length > 0 && (
-//                 <div className="mt-2">
-//                     {media.map((file, index) => (
-//                         <div key={index} className="mt-1">
-//                             {file.type === "video" ? (
-//                                 <video src={file.url} controls className="w-full rounded-md" />
-//                             ) : (
-//                                 <img src={file.url} alt="Complaint media" className="w-full rounded-md" />
-//                             )}
-//                         </div>
-//                     ))}
-//                 </div>
-//             )} */}
-
-//             {/* Media Section */}
-//             <div className="mt-2">
-//                 {/* <MediaDisplay media={media} /> */}
-//                 <MediaDisplay media={media} />
-//             </div>
-
-//             {/* User Info */}
-//             <div className="mt-3 text-gray-400 text-sm">
-//                 <p>
-//                     <strong>Student:</strong> {student.name} ({student.regNo})
-//                 </p>
-//                 <p>
-//                     <strong>Complaint ID:</strong> {_id}
-//                 </p>
-//                 <p>
-//                     <strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}
-//                 </p>
-//             </div>
-
-//             {/* Voting System */}
-//             <div className="flex justify-between items-center mt-3">
-//                 <button 
-//                     className={`px-3 py-1 rounded-md ${userVote === "upvote" ? "bg-green-700" : "bg-green-600"} text-white`}
-//                     onClick={() => handleVote("upvote")}
-//                 >
-//                     👍 {upvoteCount}
-//                 </button>
-//                 <button 
-//                     className={`px-3 py-1 rounded-md ${userVote === "downvote" ? "bg-red-700" : "bg-red-600"} text-white`}
-//                     onClick={() => handleVote("downvote")}
-//                 >
-//                     👎 {downvoteCount}
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// }
-
 export function DataCard({ props }) {
+    const[isUpvoted, setIsUpvoted] = useState(false);
+    const[isDownvoted, setIsDownvoted] = useState(false);
     const { 
         _id, 
         title, 
-        text, 
+        content : {text} = {}, 
         content: { media = [] } = {},
         upvotes = 0, 
         downvotes = 0, 
@@ -463,9 +198,17 @@ export function DataCard({ props }) {
         student  
     } = props;
 
+    console.log("media ", media);
     const [upvoteCount, setUpvoteCount] = useState(upvotes);
     const [downvoteCount, setDownvoteCount] = useState(downvotes);
     const [userVote, setUserVote] = useState(null); 
+
+    // Format date (e.g., "16 Mar 2025")
+    const formattedDate = new Date(datePosted).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
 
     useEffect(() => {
         const fetchUserVote = async () => {
@@ -482,26 +225,21 @@ export function DataCard({ props }) {
                 const response = await axios.get(`http://localhost:3000/user/get-user-vote/${_id}`,
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
-
+                // ✅ Set upvote/downvote states based on fetched userVote
                 if (response.data.success) {
                     setUserVote(response.data.userVote);
+                    setIsUpvoted(response.data.userVote === 1);
+                    setIsDownvoted(response.data.userVote === -1);
                 }
+
             } catch (error) {
                 console.error("Error fetching user vote:", error);
             }
         };
-
         fetchUserVote();
     }, [_id]);
 
     const handleVote = async (type) => {
-        // let newVoteType;
-        // if (userVote === type) {
-        //     newVoteType = 0; // Neutralize vote if clicked again
-        // } else {
-        //     newVoteType = type === "upvote" ? 1 : -1;
-        // }
-
         try {
             let accessToken ;
             const result = await getAccessToken();
@@ -512,35 +250,29 @@ export function DataCard({ props }) {
             }
             else    accessToken = result.token;
 
-            // const response = await axios.post(
-            //     `http://localhost:3000/user/vote-complaint`,
-            //     { complaintId: _id, voteType: newVoteType },
-            //     { headers: { Authorization: `Bearer ${accessToken}` } }
-            // );
-
             const response = await axios.post(
                 `http://localhost:3000/user/vote-complaint`,
                 { complaintId: _id, voteType: userVote === type ? 0 : type }, // Toggle vote
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );
-
-            // if (response.data.success) {
-            //     if (newVoteType === 1) {
-            //         setUpvoteCount((prev) => prev + 1);
-            //         if (userVote === -1) setDownvoteCount((prev) => prev - 1);
-            //     } else if (newVoteType === -1) {
-            //         setDownvoteCount((prev) => prev + 1);
-            //         if (userVote === 1) setUpvoteCount((prev) => prev - 1);
-            //     } else {
-            //         if (userVote === 1) setUpvoteCount((prev) => prev - 1);
-            //         if (userVote === -1) setDownvoteCount((prev) => prev - 1);
-            //     }
-            //     setUserVote(newVoteType === 0 ? null : newVoteType);
-            // }
             if (response.data.success) {
                 setUpvoteCount(response.data.upvotes);
                 setDownvoteCount(response.data.downvotes);
                 setUserVote(response.data.userVote);
+            }
+            if(type === 1){
+                if((!isDownvoted && !isUpvoted) || (isUpvoted))    setIsUpvoted(!isUpvoted);
+                else if(isDownvoted && !isUpvoted){
+                    setIsDownvoted(!isDownvoted);
+                    setIsUpvoted(!isUpvoted);
+                }
+            }
+            if(type === -1){
+                if((!isUpvoted && !isDownvoted) || (isDownvoted))    setIsDownvoted(!isDownvoted);
+                else if(isUpvoted && !isDownvoted){
+                    setIsDownvoted(!isDownvoted);
+                    setIsUpvoted(!isUpvoted);
+                }
             }
         } catch (error) {
             console.error("Error voting:", error);
@@ -548,41 +280,74 @@ export function DataCard({ props }) {
     };
 
     return (
-        <div className="bg-stubgcard p-3 rounded-md shadow-md">
-            <div className="mb-2">
-                <h2 className="text-lg font-semibold text-white">{title}</h2>
-                <p className="text-gray-400">{text}</p>
+        <div className="bg-stubgcard w-full h-auto px-3 py-2 rounded-lg shadow-sm shadow-gray-700">
+            {/* Author details  */}
+            <div className="text-[#b9babb] text-lg px-2 pt-1 pb-2 border-b-[1px] border-gray-500 h-auto bg-stubgcard gap-x-4">
+                 {student.name.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ")},&nbsp;({student.regNo})
             </div>
 
-            <div className="mt-2">
+            {/* Title and text content*/}
+            <div className="p-2 pb-5 bg-stubgcard">
+                 <div className="text-[#e7e8e8] font-medium text-2xl py-2">
+                     {title}
+                 </div>
+                 <div className="text-[#b9babb] py-2">
+                     {text}
+                 </div>
+            </div>
+            
+            {/* Media  */}
+            <div className="p-2 border-b-[1px] border-gray-500">
                 <MediaDisplay media={media} />
             </div>
 
-            <div className="mt-3 text-gray-400 text-sm">
-                <p>
-                    <strong>Student:</strong> {student.name} ({student.regNo})
-                </p>
-                <p>
-                    <strong>Complaint ID:</strong> {_id}
-                </p>
-                <p>
-                    <strong>Posted on:</strong> {new Date(datePosted).toLocaleString()}
-                </p>
-            </div>
+            {/* Votes buttons  */}
+            <div className="px-2 pt-3 pb-1 flex justify-between items-center">
+                <div className="flex gap-x-3">
+                    {/* Upvote  */}
+                    <div className="flex items-center ">
+                        <div className="text-white text-sm bg-[#283034] pl-2 pr-1 rounded-l-lg py-1">
+                            {upvoteCount}
+                        </div>
+                        <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer " 
+                        onClick={() => handleVote(1)}>
+                            {(isUpvoted && !isDownvoted) ? (
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+                                </svg>
+                            ):(
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-up">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 20v-8h-3.586a1 1 0 0 1 -.707 -1.707l6.586 -6.586a1 1 0 0 1 1.414 0l6.586 6.586a1 1 0 0 1 -.707 1.707h-3.586v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+                                </svg>
+                            )}
+                            
+                        </div>
+                    </div>
 
-            <div className="flex justify-between items-center mt-3">
-                <button 
-                    className={`px-3 py-1 rounded-md ${userVote === 1 ? "bg-green-700" : "bg-green-600"} text-white`}
-                    onClick={() => handleVote(1)}
-                >
-                    👍 {upvoteCount}
-                </button>
-                <button 
-                    className={`px-3 py-1 rounded-md ${userVote === -1 ? "bg-red-700" : "bg-red-600"} text-white`}
-                    onClick={() => handleVote(-1)}
-                >
-                    👎 {downvoteCount}
-                </button>
+                    {/* Downvote  */}
+                     <div className="flex items-center">
+                        <div className="text-white text-sm bg-[#2A3236] pl-2 pr-1 rounded-l-lg py-1">
+                            {downvoteCount}
+                        </div>
+                        <div className="text-white bg-[#283034] rounded-r-lg p-1 cursor-pointer" 
+                        onClick={() => handleVote(-1)}>
+                            {isDownvoted ? (
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
+                                </svg>
+                            ) : (
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-down">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z" />
+                                </svg>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* date Posted  */}
+                <div className="text-[#b9babb]">
+                    {formattedDate}
+                </div>
             </div>
         </div>
     );
